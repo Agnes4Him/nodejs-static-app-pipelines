@@ -1,3 +1,5 @@
+#!/usr/bin/env groovy
+
 pipelins {
     agent any
     stages {

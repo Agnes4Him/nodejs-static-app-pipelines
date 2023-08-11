@@ -1,15 +1,15 @@
 pipelins {
     agent any
     stages {
-        stage ('Build')
+        stage('Build')
         steps {
             echo "Building the app.."
         }
-        stage ('Test')
+        stage('Test')
         steps {
             echo "Testing the app.."
         }
-        stage ('Deploy')
+        stage('Deploy')
         steps {
             echo "Deploying the app.."
         }

@@ -19,7 +19,7 @@ pipeline {
                 echo 'Deploying ...'
                 def dockerCmd = "docker run -p 5555:5555 -d ${IMAGE_REPO}"
                 sshagent(['server-key']) {
-                    sh "ssh -o StrictHostKeyChecking=no ubuntu@ip_address ${dockerCmd}"
+                    sh "ssh -o StrictHostKeyChecking=no ubuntu@18.205.2.119 ${dockerCmd}"
                 }
             }
             /*steps {
@@ -27,7 +27,7 @@ pipeline {
                 withAWS(credentials: 'aws-creds', region: 'us-east-1') {
                     def dockerCmd = "docker run -p 5555:5555 -d ${IMAGE_REPO}"
                     sshagent(['server-key']) {
-                        sh "ssh -o StrictHostKeyChecking=no ubuntu@ip_address ${dockerCmd}"
+                        sh "ssh -o StrictHostKeyChecking=no ubuntu@18.205.2.119 ${dockerCmd}"
                     }
                 }
             }*/

@@ -16,10 +16,12 @@ pipeline {
         }
         stage('Deploy Image') {
             steps {
-                echo 'Deploying ...'
-                def dockerCmd = "docker run -p 5555:5555 -d ${IMAGE_REPO}"
-                sshagent(['server-key']) {
-                    sh "ssh -o StrictHostKeyChecking=no ubuntu@18.205.2.119 ${dockerCmd}"
+                script {
+                    echo 'Deploying ...'
+                    def dockerCmd = "docker run -p 5555:5555 -d ${IMAGE_REPO}"
+                    sshagent(['server-key']) {
+                        sh "ssh -o StrictHostKeyChecking=no ubuntu@18.205.2.119 ${dockerCmd}"
+                    }
                 }
             }
             /*steps {

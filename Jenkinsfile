@@ -1,46 +1,36 @@
-// Building docker image and pushing to Amazon ECR
+// Pull docker image from dockerhub and deploy to EC2
 pipeline {
     agent any
     options {
         buildDiscarder(logRotator(numToKeepStr: '5'))
     }
     environment {
-        AWS_ACCOUNT_ID="759907441676"
-        AWS_DEFAULT_REGION="us-east-1" 
-        IMAGE_REPO_NAME="nodejs-static-app"
-        IMAGE_TAG="${env.BUILD_ID}-${env.GIT_COMMIT}"
-        REPOSITORY_URI = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}"
+        IMAGE_REPO="agnes4im/nodejs-static-app:v1.0"
     }
     stages {
-        stage('Build') {
+        stage('Pull Image') {
             steps {
-                echo 'Building the app'
-                sh "docker build -t ${IMAGE_REPO_NAME}:${IMAGE_TAG} ."
+                echo 'Pulling docker image'
+                sh "docker pull ${IMAGE_REPO}"
             }
         }
-        stage('Login') {
-            //steps {
-                //echo 'Login in ...'
-                //sh "aws ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"
-            //}
+        stage('Deploy Image') {
             steps {
-                echo 'Login in ...'
-                withAWS(credentials: 'aws-creds', region: 'us-east-1') {
-                    sh "aws ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"
+                echo 'Deploying ...'
+                def dockerCmd = "docker run -p 5555:5555 -d ${IMAGE_REPO}"
+                sshagent(['server-key']) {
+                    sh "ssh -o StrictHostKeyChecking=no ubuntu@ip_address ${dockerCmd}"
                 }
             }
-        }
-        stage('Push') {
-            steps {
-                echo 'Pushing ...'
-                sh "docker tag ${IMAGE_REPO_NAME}:${IMAGE_TAG} ${REPOSITORY_URI}:${IMAGE_TAG}"
-                sh "docker push ${REPOSITORY_URI}:${IMAGE_TAG}"
-            }
-        }
-    }
-    post {
-        always {
-            sh 'docker logout'
+            /*steps {
+                echo 'Deploying ...'
+                withAWS(credentials: 'aws-creds', region: 'us-east-1') {
+                    def dockerCmd = "docker run -p 5555:5555 -d ${IMAGE_REPO}"
+                    sshagent(['server-key']) {
+                        sh "ssh -o StrictHostKeyChecking=no ubuntu@ip_address ${dockerCmd}"
+                    }
+                }
+            }*/
         }
     }
 }

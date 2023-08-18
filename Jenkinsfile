@@ -6,12 +6,15 @@ pipeline {
     }
     environment {
         DOCKERHUB_CREDENTIALS = credentials('dockerhub-creds')
+        APP-NAME = "noodejs-static-app"
+        IMAGE_TAG = "${env.BUILD_ID}-${env.GIT_COMMIT}"
     }
     stages {
         stage('Build') {
             steps {
                 echo 'Building the app'
                 sh 'docker build -t agnes4im/nodejs-static-app:v1.0 .'
+                sh "docker build -t ${DOCKERHUB_CREDENTIALS_USR}/${APP-NAME}:${IMAGE_TAG} ."
             }
         }
         stage('Login') {

@@ -13,7 +13,6 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Building the app'
-                sh 'docker build -t agnes4im/nodejs-static-app:v1.0 .'
                 sh "docker build -t ${DOCKERHUB_CREDENTIALS_USR}/${APP-NAME}:${IMAGE_TAG} ."
             }
         }
@@ -26,7 +25,7 @@ pipeline {
         stage('Push') {
             steps {
                 echo 'Pushing ...'
-                sh 'docker push agnes4im/nodejs-static-app:v1.0'
+                sh "docker push ${DOCKERHUB_CREDENTIALS_USR}/${APP-NAME}:${IMAGE_TAG}"
             }
         }
     }

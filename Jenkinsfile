@@ -4,9 +4,6 @@ pipeline {
     options {
         buildDiscarder(logRotator(numToKeepStr: '5'))
     }
-    environment {
-        //
-    }
     stages {
         stage('Deploy') {
             steps {

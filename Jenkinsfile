@@ -6,14 +6,14 @@ pipeline {
     }
     environment {
         DOCKERHUB_CREDENTIALS = credentials('dockerhub-creds')
-        APP-NAME = "noodejs-static-app"
+        APP_NAME = "noodejs-static-app"
         IMAGE_TAG = "${env.BUILD_ID}-${env.GIT_COMMIT}"
     }
     stages {
         stage('Build') {
             steps {
                 echo 'Building the app'
-                sh "docker build -t ${DOCKERHUB_CREDENTIALS_USR}/${APP-NAME}:${IMAGE_TAG} ."
+                sh "docker build -t ${DOCKERHUB_CREDENTIALS_USR}/${APP_NAME}:${IMAGE_TAG} ."
             }
         }
         stage('Login') {
@@ -25,7 +25,7 @@ pipeline {
         stage('Push') {
             steps {
                 echo 'Pushing ...'
-                sh "docker push ${DOCKERHUB_CREDENTIALS_USR}/${APP-NAME}:${IMAGE_TAG}"
+                sh "docker push ${DOCKERHUB_CREDENTIALS_USR}/${APP_NAME}:${IMAGE_TAG}"
             }
         }
     }
